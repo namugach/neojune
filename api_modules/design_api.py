@@ -34,6 +34,7 @@ def get_design_info(service_key, applicant) -> list[dict] :
             'part': 'true',
             'etc': 'true',
             'sortSpec': 'applicationDate',
+            
         }
 
 

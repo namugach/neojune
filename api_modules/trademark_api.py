@@ -45,6 +45,7 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
             'pageNo': page,  # 기본 페이지 번호
             'numOfRows': 500,  # 기본 페이지당 건수
             'sortSpec': 'applicationDate',
+            'trademark': 'true'
         }
 
 
@@ -58,35 +59,29 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
                 header = api_result['response']['header']
                 body = api_result['response']['body']['items']
                 count = api_result['response']['count']
-                print(api_result['response'].keys())
-
-                print(count)
-                
                 
                 if body == None:
                     Flag = False
                     continue
-                # print(body['item'])
 
-                # items = body['item']
-                # for item in items:
-                #     result.append({
-                #         'index': item.get('indexNo'),
-                #         'title': item.get('title'),
-                #         'applicant': item.get('applicationName'),
-                #         'agent' : item.get('agentName'),
-                #         'appl_no': item.get('applicationNumber'),
-                #         'appl_date': item.get('applicationDate'),
-                #         'reg_no': item.get('registerNumber'),
-                #         'reg_date': item.get('registerDate'),
-                #         'pub_no': item.get('publicationNumber'),
-                #         'pub_date': item.get('publicationDate'),
-                #         'legal_status_desc': item.get('applicationStatus'),
-                #         'drawing': item.get('drawing'),
+                items = body['item']
+                for item in items:
+                    result.append({
+                        'index': item.get('indexNo'),
+                        'title': item.get('title'),
+                        'applicant': item.get('applicationName'),
+                        'agent' : item.get('agentName'),
+                        'appl_no': item.get('applicationNumber'),
+                        'appl_date': item.get('applicationDate'),
+                        'reg_no': item.get('registerNumber'),
+                        'reg_date': item.get('registerDate'),
+                        'pub_no': item.get('publicationNumber'),
+                        'pub_date': item.get('publicationDate'),
+                        'legal_status_desc': item.get('applicationStatus'),
+                        'drawing': item.get('drawing'),
 
-                #     })
+                    })
                 page += 1
-                print(page)
 
             else:
                 print(f"HTTP 오류: {response.status_code}")
