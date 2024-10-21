@@ -56,7 +56,8 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
 
 
         try:
-            response = requests.get(url, params=request_params)
+            response = requests.get(url, params=request_params, timeout=10)
+            response.raise_for_status()
 
             if response.status_code == 200:
 
@@ -92,6 +93,11 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
             else:
                 print(f"HTTP 오류: {response.status_code}")
                 Flag = False
+
+        except requests.exceptions.Timeout:
+            print(f"Timeout 오류 발생, page: {page}. 재시도 중...")
+            time.sleep(2)  # 재시도하기 전에 일정 시간 대기
+            continue  
 
         except Exception as e:
             print(f"오류 발생: {str(e)}, page: {page}")
