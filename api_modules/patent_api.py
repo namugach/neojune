@@ -5,8 +5,6 @@ import os
 from dotenv import load_dotenv
 import time
 
-load_dotenv()
-
 def get_patent_info(service_key, applicant) -> list[dict] : 
     url = "http://plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice/getAdvancedSearch"
 
@@ -24,8 +22,6 @@ def get_patent_info(service_key, applicant) -> list[dict] :
             'numOfRows': 500,  # 최대 페이지당 건수
         }
 
-        
-
         try:
             response = requests.get(url, params=request_params)
 
@@ -37,14 +33,13 @@ def get_patent_info(service_key, applicant) -> list[dict] :
                 header = api_result['response']['header']
                 body = api_result['response']['body']['items']
                 count = api_result['response']['count']
-                items = body['item']
-
-                if body == None:
+                
+                # data가 없을때의 에러처리 
+                if not body:
                     Flag = False
                     continue
 
-                page += 1
-
+                items = body['item']
                 for item in items:
                     result.append({
                         'index': item.get('indexNo'),
@@ -62,14 +57,14 @@ def get_patent_info(service_key, applicant) -> list[dict] :
                         'drawing': item.get('drawing'),
 
                     })
+                page += 1
 
             else:
                 print(f"HTTP 오류: {response.status_code}")
                 Flag = False
 
         except Exception as e:
-            print(f"오류 발생: {str(e)}")
-            print(xmltodict.parse(response.content))
+            print(f"오류 발생: {str(e)}, page: {page}" ) 
             Flag = False
     return result
 
@@ -77,7 +72,9 @@ def get_patent_info(service_key, applicant) -> list[dict] :
 if __name__ == "__main__":
 
     start = time.time()
-    service_key = os.getenv('SERVICE_KEY')  # 실제 서비스 키로 변경
+    load_dotenv()
+
+    service_key = os.getenv('SERVICE_KEY')
 
     # 미리 정의된 파라미터 리스트
     params_list = [
@@ -87,9 +84,9 @@ if __name__ == "__main__":
     # 각 파라미터로 API 호출
     for applicant in params_list:
         print(f"검색 조건: {applicant}")
-        c = get_patent_info(service_key, applicant)
+        result = get_patent_info(service_key, applicant)
 
-    print(len(c))
+    print(len(result))
     print(time.time() - start)
 
     

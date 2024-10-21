@@ -9,7 +9,7 @@ load_dotenv()
 
 def get_trademark_info(service_key, applicant) -> list[dict] : 
     url = "http://plus.kipris.or.kr/kipo-api/kipi/trademarkInfoSearchService/getAdvancedSearch"
-
+    
     page = 1
     result = []
 
@@ -20,6 +20,7 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
         request_params = {
             'ServiceKey': service_key,
             'applicantName': applicant,
+            'freeSearch' : applicant,
             'application': 'true',
             'registration': 'true',
             'refused': 'true',
@@ -50,50 +51,49 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
         try:
             response = requests.get(url, params=request_params)
 
-                # 응답이 비어있는지 확인
-            # if not response_content.strip():
-            #     print("응답이 비어 있습니다.")
-            #     return
-
             if response.status_code == 200:
-                # XML 파싱 -> dict
+
                 api_result = xmltodict.parse(response.content)
 
                 header = api_result['response']['header']
                 body = api_result['response']['body']['items']
                 count = api_result['response']['count']
-                items = body['item']
+                print(api_result['response'].keys())
 
+                print(count)
+                
+                
                 if body == None:
                     Flag = False
                     continue
+                # print(body['item'])
 
+                # items = body['item']
+                # for item in items:
+                #     result.append({
+                #         'index': item.get('indexNo'),
+                #         'title': item.get('title'),
+                #         'applicant': item.get('applicationName'),
+                #         'agent' : item.get('agentName'),
+                #         'appl_no': item.get('applicationNumber'),
+                #         'appl_date': item.get('applicationDate'),
+                #         'reg_no': item.get('registerNumber'),
+                #         'reg_date': item.get('registerDate'),
+                #         'pub_no': item.get('publicationNumber'),
+                #         'pub_date': item.get('publicationDate'),
+                #         'legal_status_desc': item.get('applicationStatus'),
+                #         'drawing': item.get('drawing'),
+
+                #     })
                 page += 1
-
-                for item in items:
-                    result.append({
-                        'index': item.get('indexNo'),
-                        'title': item.get('title'),
-                        'applicant': item.get('applicationName'),
-                        'agent' : item.get('agentName'),
-                        'appl_no': item.get('applicationNumber'),
-                        'appl_date': item.get('applicationDate'),
-                        'reg_no': item.get('registerNumber'),
-                        'reg_date': item.get('registerDate'),
-                        'pub_no': item.get('publicationNumber'),
-                        'pub_date': item.get('publicationDate'),
-                        'legal_status_desc': item.get('applicationStatus'),
-                        'drawing': item.get('drawing'),
-
-                    })
+                print(page)
 
             else:
                 print(f"HTTP 오류: {response.status_code}")
                 Flag = False
 
         except Exception as e:
-            print(f"오류 발생: {str(e)}")
-            print(response)
+            print(f"오류 발생: {str(e)}, page: {page}")
             Flag = False
     return result
 
@@ -105,15 +105,15 @@ if __name__ == "__main__":
 
     # 미리 정의된 파라미터 리스트
     params_list = [
-            '119980005233'
+            '120140558200'
     ]
 
     # 각 파라미터로 API 호출
     for applicant in params_list:
         print(f"검색 조건: {applicant}")
-        c = get_trademark_info(service_key, applicant)
+        result = get_trademark_info(service_key, applicant)
 
-    print(len(c))
+    print(len(result))
     print(time.time() - start)
 
     

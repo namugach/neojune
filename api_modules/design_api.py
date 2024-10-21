@@ -48,13 +48,13 @@ def get_design_info(service_key, applicant) -> list[dict] :
                 header = api_result['response']['header']
                 body = api_result['response']['body']['items']
                 count = api_result['response']['count']
-                items = body['item']
+                
+
                 if body == None:
                     Flag = False
                     continue
 
-                page += 1
-
+                items = body['item']
                 for item in items:
                     result.append({
                         'index': item.get('number'),
@@ -74,14 +74,14 @@ def get_design_info(service_key, applicant) -> list[dict] :
                         'drawing': item.get('imagePath'),
 
                     })
+                page += 1
 
             else:
                 print(f"HTTP 오류: {response.status_code}")
                 Flag = False
 
         except Exception as e:
-            print(f"오류 발생: {str(e)}")
-            print(response)
+            print(f"오류 발생: {str(e)}, page: {page}")
             Flag = False
     return result
 
