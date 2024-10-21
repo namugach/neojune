@@ -29,6 +29,12 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
             'publication': 'true',
             'cancel': 'true',
             'abandonment': 'true',
+            'serviceMark' : 'true', 
+            'trademark': 'true',
+            'trademarkServiceMark' : 'true', 
+            'businessEmblem' : 'true',
+            'collectiveMark' : 'true',
+            'internationalMark' : 'true',
             'character': 'true',
             'figure': 'true',
             'compositionCharacter': 'true',
@@ -45,7 +51,7 @@ def get_trademark_info(service_key, applicant) -> list[dict] :
             'pageNo': page,  # 기본 페이지 번호
             'numOfRows': 500,  # 기본 페이지당 건수
             'sortSpec': 'applicationDate',
-            'trademark': 'true'
+            
         }
 
 
