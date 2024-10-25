@@ -1,7 +1,13 @@
 FROM namugach/ubuntu-basic:24.04-kor
 WORKDIR /root
 
-RUN apt-get install -y nginx mysql-server
+RUN apt-get update
+
+# Nginx, MySQL 서버, 및 MySQL 개발 라이브러리 설치
+RUN apt-get install -y nginx mysql-server pkg-config libmysqlclient-dev
+
+# 데이터 분석 및 데이터베이스 연결을 위한 Python 라이브러리 설치
+RUN pip install pandas mysqlclient numpy openpyxl requests xmltodict python-dotenv
 
 #### 여기부터 SSH 
 RUN mkdir /var/run/sshd
@@ -37,7 +43,7 @@ RUN sed -ri 's/^#.+port.+= 3306/port = 3306/' /etc/mysql/mysql.conf.d/mysqld.cnf
 RUN sed -ri 's/^bind-address.+= 127.0.0.1/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
 RUN service mysql start && \
-    mysql -e "CREATE DATABASE IF NOT EXISTS mydatabase; \
+    mysql -e "CREATE DATABASE IF NOT EXISTS neojune; \
     CREATE USER 'ubuntu'@'%' IDENTIFIED BY '1234'; \
     GRANT ALL PRIVILEGES ON *.* TO 'ubuntu'@'%' WITH GRANT OPTION; \
     FLUSH PRIVILEGES;"
