@@ -39,14 +39,26 @@ RUN echo "Host server*\n \
 RUN chown -R mysql:mysql /var/run/mysqld
 RUN chmod 755 /var/run/mysqld
 
+# MySQL 포트 설정 변경
 RUN sed -ri 's/^#.+port.+= 3306/port = 3306/' /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# MySQL 바인딩 주소 변경
 RUN sed -ri 's/^bind-address.+= 127.0.0.1/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
+# SQL 파일 복사
+COPY res/sql/neojune_2024-10-25_133204.sql /root/neojune_2024-10-25_133204.sql
+
+# MySQL 서비스 시작 및 데이터베이스 설정
 RUN service mysql start && \
+    # 데이터베이스 생성 및 사용자 권한 설정
     mysql -e "CREATE DATABASE IF NOT EXISTS neojune; \
     CREATE USER 'ubuntu'@'%' IDENTIFIED BY '1234'; \
     GRANT ALL PRIVILEGES ON *.* TO 'ubuntu'@'%' WITH GRANT OPTION; \
-    FLUSH PRIVILEGES;"
+    FLUSH PRIVILEGES;" && \
+    # SQL 파일 실행
+    mysql -u root neojune < /root/neojune_2024-10-25_133204.sql && \
+    # SQL 파일 삭제
+    rm /root/neojune_2024-10-25_133204.sql
 
 RUN echo "[mysqld]\n \
     character-set-server=utf8\n \
@@ -58,6 +70,7 @@ RUN echo "[mysqld]\n \
     [mysql]\n \
     default-character-set=utf8" >> /etc/mysql/mysql.conf.d/mysqld.cnf
     
+
 
 # nginx, SSH, MySQL 동시에 실행하기 위한 커맨드
 CMD [ \
