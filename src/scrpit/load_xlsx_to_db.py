@@ -1,6 +1,10 @@
 import os
 import sys
 
+# apt update
+# apt install -y pkg-config libmysqlclient-dev
+# pip install pandas mysqlclient numpy openpyxl
+
 import pandas as pd
 import MySQLdb
 import numpy as np
