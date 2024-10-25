@@ -66,7 +66,3 @@ docker container exec -i test mysql -u root neojune < res/sql/neojune_2024-10-25
 ### 라이선스
 
 MIT License 
-
----
-
-이 README.md 파일은 Docker 이미지 사용에 도움이 되기를 바랍니다! 😊 궁금한 점이 있다면 언제든지 질문해 주세요! 
